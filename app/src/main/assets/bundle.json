@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "bundles": [
+    {
+      "uri": "lib.utils",
+      "pkg": "com.rmbmiss.lib.utils"
+    },
+    {
+      "uri": "lib.style",
+      "pkg": "com.rmbmiss.lib.style"
+    },
+    {
+      "uri": "lib.compile",
+      "pkg": "com.rmbmiss.lib.compile"
+    },
+    {
+      "uri": "mian",
+      "pkg": "com.rmbmiss.app.mian",
+      "rules":{
+        "av_mian": "com.rmbmiss.app.mian.activity.MainActivity"
+      }
+    },
+    {
+      "uri": "mall",
+      "pkg": "com.rmbmiss.app.mall"
+    },
+    {
+      "uri": "news",
+      "pkg": "com.rmbmiss.app.news"
+    },
+    {
+      "uri": "about",
+      "pkg": "com.rmbmiss.web.about"
+    }
+  ]
+}
