@@ -15,6 +15,6 @@ import com.rmbmiss.app.mian.base.BaseDatabean
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-data class NavigationDatabean<K,V>(var key:K,var value:V):BaseDatabean() {
+data class NavigationDatabean(var key:String,var value:Any?):BaseDatabean() {
 
 }

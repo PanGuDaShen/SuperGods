@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_navigation.*
  */
 class NavigationActivity : BaseSuperActivity() {
 
-    private var mNavigationAdapter: NavigationAdapter<NavigationDatabean<String, Any?>, BaseAbstartViewHolder<NavigationDatabean<String, Any?>>>?=null
+    private var mNavigationAdapter: NavigationAdapter<NavigationDatabean, BaseAbstartViewHolder<NavigationDatabean>>?=null
 
     override fun setLayoutView(): Int {
         return R.layout.activity_navigation

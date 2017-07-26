@@ -37,7 +37,10 @@ object DirPathTools {
         //getMethod("getVolumePaths")返回StorageManager类对应的Class对象的getVolumePaths方法，这里不带参数
         val mMethod = mStorageManager.javaClass.getMethod("getVolumePaths")
         val paths = mMethod.invoke(mStorageManager)
-        return paths as Array<String>?
+        paths?.let {
+            return paths as Array<String>
+        }
+        return null
     }
 
     /**************************************************系统级********************************************/
