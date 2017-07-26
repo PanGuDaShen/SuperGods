@@ -9,7 +9,17 @@ import com.rmbmiss.app.mian.databean.NavigationDatabean
 import com.rmbmiss.app.mian.hodler.NavigationMacthHolder
 
 /**
- * Created by Administrator on 2017/7/25.
+ * ================================================
+ * 项目名称：YouYaXianZi
+ * 类 描 述：
+ * 创 建 人：IMissYou
+ * 创建时间：2017/7/26 16:27
+ * 修 改 人：IMissYou
+ * 修改时间：2017/7/26 16:27
+ * 修改备注：
+ * 版    本：Vs.1.0.0
+ * 修订版本：Vs.1.0.2
+ * ================================================
  */
 class NavigationAdapter<T, VH : BaseAbstartViewHolder<T>>(that: Context, datas: MutableList<T>?) : BaseRecyclerAdapter<T, VH>(that, datas) {
     override fun onCreateHolder(parent: ViewGroup?, viewType: Int): VH? {

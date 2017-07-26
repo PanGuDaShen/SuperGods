@@ -1,8 +1,13 @@
 package com.rmbmiss.app.mian.activity
 
 import com.rmbmiss.app.mian.R
+import com.rmbmiss.app.mian.adapter.NavigationAdapter
+import com.rmbmiss.app.mian.base.BaseAbstartViewHolder
 import com.rmbmiss.app.mian.base.BaseSuperActivity
 import com.rmbmiss.app.mian.databean.NavigationDatabean
+import com.rmbmiss.app.mian.databean.NavigationList
+import com.rmbmiss.lib.utils.viewtools.RecyclerViewTools
+import kotlinx.android.synthetic.main.activity_navigation.*
 
 /**
  * ================================================
@@ -19,7 +24,8 @@ import com.rmbmiss.app.mian.databean.NavigationDatabean
  */
 class NavigationActivity : BaseSuperActivity() {
 
-    //    private var mNavigationAdapter: NavigationAdapter<SetUpDatabean, SetUpHolder<SetUpDatabean>>?=null
+    private var mNavigationAdapter: NavigationAdapter<NavigationDatabean<String, Any?>, BaseAbstartViewHolder<NavigationDatabean<String, Any?>>>?=null
+
     override fun setLayoutView(): Int {
         return R.layout.activity_navigation
     }
@@ -29,5 +35,9 @@ class NavigationActivity : BaseSuperActivity() {
     }
 
     override fun initData() {
+        mNavigationAdapter = NavigationAdapter(applicationContext,NavigationList.list)
+        id_main_rv_2?.let {
+            RecyclerViewTools.setRvLinear(this,it,-1).adapter = mNavigationAdapter
+        }
     }
 }
