@@ -2,7 +2,9 @@ package com.rmbmiss.app.mian.hodler
 
 import android.content.Context
 import android.view.View
-import com.rmbmiss.app.mian.base.BaseAbstartViewHolder
+import android.widget.TextView
+import com.rmbmiss.app.mian.R
+import com.rmbmiss.app.mian.base.BaseHFAbstartViewHolder
 import com.rmbmiss.app.mian.databean.NavigationDatabean
 
 /**
@@ -18,9 +20,19 @@ import com.rmbmiss.app.mian.databean.NavigationDatabean
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-class NavigationColorHolder<T>(content: Context, view: View): BaseAbstartViewHolder<T>(view) {
+class NavigationColorHolder<T>(content: Context, view: View): BaseHFAbstartViewHolder<T>(view) {
+
+    private var id_main_tv_5: TextView
+    private var id_main_tv_6:TextView
+
+    init {
+        id_main_tv_5 = view.findViewById(R.id.id_main_tv_5)
+        id_main_tv_6 = view.findViewById(R.id.id_main_tv_6)
+    }
+
     override fun bindHolder(person: T) {
         person as NavigationDatabean
+        id_main_tv_5.text = person.key
     }
 }
 

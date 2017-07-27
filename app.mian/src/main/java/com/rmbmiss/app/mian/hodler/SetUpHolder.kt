@@ -5,11 +5,9 @@ import android.content.Intent
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import com.blankj.utilcode.util.LogUtils
 import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.activity.SetUpActivity
-import com.rmbmiss.app.mian.base.BaseAbstartViewHolder
+import com.rmbmiss.app.mian.base.BaseHFAbstartViewHolder
 import com.rmbmiss.app.mian.databean.SetUpDatabean
 import com.rmbmiss.lib.utils.apptools.AppManagerUtils
 
@@ -26,7 +24,7 @@ import com.rmbmiss.lib.utils.apptools.AppManagerUtils
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-class SetUpHolder<T>(content:Context , view:View): BaseAbstartViewHolder<T>(view) {
+class SetUpHolder<T>(content:Context , view:View): BaseHFAbstartViewHolder<T>(view) {
 
     private var id_main_tv_1:TextView
     private var id_main_iv_1:ImageView

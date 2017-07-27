@@ -1,13 +1,24 @@
 package com.rmbmiss.app.mian.activity
 
+import android.content.Context
+import android.graphics.Canvas
+import android.support.v7.widget.RecyclerView
 import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.adapter.NavigationAdapter
-import com.rmbmiss.app.mian.base.BaseAbstartViewHolder
+import com.rmbmiss.app.mian.base.BaseHFAbstartViewHolder
 import com.rmbmiss.app.mian.base.BaseSuperActivity
 import com.rmbmiss.app.mian.databean.NavigationDatabean
 import com.rmbmiss.app.mian.databean.NavigationList
 import com.rmbmiss.lib.utils.viewtools.RecyclerViewTools
 import kotlinx.android.synthetic.main.activity_navigation.*
+import android.support.v7.widget.StaggeredGridLayoutManager
+import android.support.v7.widget.GridLayoutManager
+import android.content.res.TypedArray
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import android.support.v7.widget.RecyclerView.State
+
+
 
 /**
  * ================================================
@@ -24,7 +35,7 @@ import kotlinx.android.synthetic.main.activity_navigation.*
  */
 class NavigationActivity : BaseSuperActivity() {
 
-    private var mNavigationAdapter: NavigationAdapter<NavigationDatabean, BaseAbstartViewHolder<NavigationDatabean>>?=null
+    private var mNavigationAdapter: NavigationAdapter<NavigationDatabean, BaseHFAbstartViewHolder<NavigationDatabean>>?=null
 
     override fun setLayoutView(): Int {
         return R.layout.activity_navigation
@@ -40,4 +51,5 @@ class NavigationActivity : BaseSuperActivity() {
             RecyclerViewTools.setRvLinear(this,it,-1).adapter = mNavigationAdapter
         }
     }
+
 }

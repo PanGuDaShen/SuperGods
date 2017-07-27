@@ -20,72 +20,45 @@ import com.blankj.utilcode.util.LogUtils
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-abstract class BaseRecyclerAdapter<T,VH: BaseAbstartViewHolder<T>>(that: Context, datas: MutableList<T>?) : RecyclerView.Adapter<VH>() {
+abstract class BaseHFRecyclerAdapter<T, VH : BaseHFAbstartViewHolder<T>>(that: Context, datas: MutableList<T>?) : RecyclerView.Adapter<VH>() {
 
-    val VIEW_HEADER = 0  //说明是带有Header的
-    val VIEW_FOOTER = 1  //说明是带有Footer的
-    val VIEW_NORMAL = 2  //说明是不带有header和footer的
+    val VIEW_HEADER = -1  //说明是带有Header的
+    val VIEW_FOOTER = -2  //说明是带有Footer的
+    val VIEW_NORMAL = -3  //说明是不带有header和footer的
 
     protected var mContext: Context
     protected var mDatas: MutableList<T>
     protected var mInflater: LayoutInflater
 
     //HeaderView, FooterView 一般用于广告
-    private var mHeaderView: View? = null
-    private var mFooterView: View? = null
+    var mHeaderView: View? = null
+    var mFooterView: View? = null
+
+    private var mHeaderData: Any? = null
+    private var mFooterData: Any? = null
 
     init {
         this.mContext = that
         mInflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         if (datas == null) {
             this.mDatas = mutableListOf<T>()
-        }else{
+        } else {
             this.mDatas = datas
         }
     }
 
-    /**
-     * item条目总数，根据头尾部变化。
-     */
-    override fun getItemCount(): Int {
-        if (mHeaderView == null && mFooterView == null) {
-            return mDatas.size
-        } else if (mHeaderView == null && mFooterView != null) {
-            return mDatas.size + 1
-        } else if (mHeaderView != null && mFooterView == null) {
-            return mDatas.size + 1
-        } else {
-            return mDatas.size + 2
-        }
-    }
-
     /**设置头部，如果取消也可以使用此接口*/
-    fun setHeaderView(headerView: View? ) {
-        if (headerView == null){
-            LogUtils.e(" headerView is null")
-        }
+    fun <Rs> setHeaderView(headerView: View?, rs: Rs?) {
         mHeaderView = headerView
+        mHeaderData = rs
         notifyItemInserted(0)
-
-    }
-
-    /**获取头部视图对象*/
-    fun getHeaderView(): View? {
-        return mHeaderView
     }
 
     /**设置尾部*/
-    fun setFooterView(footerView: View? ) {
-        if (footerView == null){
-            LogUtils.e(" footerView is null")
-        }
+    fun <Rs> setFooterView(footerView: View?, rs: Rs?) {
         mFooterView = footerView
+        mFooterData = rs
         notifyItemInserted(getItemCount() - 1)
-    }
-
-    /**获取尾部视图对象*/
-    fun getFooterView(): View? {
-        return mFooterView
     }
 
     /** 更新数据，替换原有数据  */
@@ -97,21 +70,28 @@ abstract class BaseRecyclerAdapter<T,VH: BaseAbstartViewHolder<T>>(that: Context
     /** 插入一条数据  */
     fun addItem(item: T) {
         mDatas.add(0, item)
-        notifyItemInserted(0)
+        if (mHeaderView != null) {
+            notifyItemInserted(1)
+        }
     }
 
     /** 插入一条数据  */
     fun addItem(item: T, positions: Int) {
-        var position = positions
-        position = Math.min(position, mDatas.size)
+        var position = Math.min(positions, mDatas.size)
         mDatas.add(position, item)
+        if (mHeaderView != null) {
+            position += 1
+        }
         notifyItemInserted(position)
     }
 
     /** 在列表尾添加一串数据  */
     fun addItems(items: List<T>) {
-        val start = mDatas.size
+        var start = mDatas.size
         mDatas.addAll(items)
+        if (mHeaderView != null) {
+            start += 1
+        }
         notifyItemRangeChanged(start, items.size)
     }
 
@@ -120,13 +100,20 @@ abstract class BaseRecyclerAdapter<T,VH: BaseAbstartViewHolder<T>>(that: Context
         if (position > mDatas.size - 1) {
             return
         }
-        mDatas.removeAt(position)
-        notifyItemRemoved(position)
+        var i = position
+        if (mHeaderView != null) {
+            i += 1
+        }
+        mDatas.removeAt(i)
+        notifyItemRemoved(i)
     }
 
     /** 移除一条数据  */
     fun removeItem(item: T) {
         var position = 0
+        if (mHeaderView != null) {
+            position = 1
+        }
         val iterator = mDatas.listIterator()
         while (iterator.hasNext()) {
             val next = iterator.next()
@@ -145,45 +132,23 @@ abstract class BaseRecyclerAdapter<T,VH: BaseAbstartViewHolder<T>>(that: Context
     }
 
     /**
-     * 重写getItemViewType（）方法，过滤条目的返回类型
+     * 自定义返回类型
      */
-    override fun getItemViewType(position: Int): Int {
-        // mHeaderView和mFooterView都不加载
-        if (mHeaderView == null && mFooterView == null){
-            return VIEW_NORMAL
-        }
-        // 第一个加载mHeaderView
-        if(position == 0){
-            return VIEW_HEADER
-        }
-        // 倒数第一个加载mFooterView
-        if(position == itemCount - 1){
-            return VIEW_FOOTER
-        }
+    open fun getItemType(position: Int): Int {
         return VIEW_NORMAL
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): VH? {
-        when(viewType){
-            VIEW_HEADER -> return mHeaderView?.let { onCreateHeaderViewHolder(it) }
-            VIEW_FOOTER -> return mFooterView?.let { onCreateFooterViewHolder(it) }
-            VIEW_NORMAL -> return onCreateHolder(parent,viewType)
-            else -> LogUtils.e("viewType = ${viewType} ,类型值不在 VIEW_HEADER=${VIEW_HEADER}，VIEW_FOOTER=${VIEW_FOOTER}，VIEW_NORMAL=${VIEW_NORMAL} 区间内？")
-        }
-        return null
     }
 
     /**
      * 考虑到不是每个Rv都会有头部，所以设计为可重写方法，有头部显示时调用此方法，子类重写即可。
      */
-    open fun onCreateHeaderViewHolder(it: View): VH?{
+    open fun onCreateHeaderViewHolder(it: View): VH? {
         return null
     }
 
     /**
      * 考虑到不是每个Rv都会有尾部，所以设计为可重写方法，有尾部显示时调用此方法，子类重写即可。
      */
-    open fun onCreateFooterViewHolder(it: View): VH?{
+    open fun onCreateFooterViewHolder(it: View): VH? {
         return null
     }
 
@@ -192,17 +157,63 @@ abstract class BaseRecyclerAdapter<T,VH: BaseAbstartViewHolder<T>>(that: Context
      */
     abstract fun onCreateHolder(parent: ViewGroup?, viewType: Int): VH?
 
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): VH? {
+        when (viewType) {
+            VIEW_HEADER -> return mHeaderView?.let { onCreateHeaderViewHolder(it) }
+            VIEW_FOOTER -> return mFooterView?.let { onCreateFooterViewHolder(it) }
+            else -> return onCreateHolder(parent, viewType)
+        }
+        return onCreateHolder(parent, viewType)
+    }
+
+    /**
+     * item条目总数，根据头尾部变化。
+     */
+    override fun getItemCount(): Int {
+        if (mHeaderView == null && mFooterView == null) {
+            return mDatas.size
+        } else if (mHeaderView == null && mFooterView != null) {
+            return mDatas.size + 1
+        } else if (mHeaderView != null && mFooterView == null) {
+            return mDatas.size + 1
+        } else {
+            return mDatas.size + 2
+        }
+    }
+
+    /**
+     * 重写getItemViewType（）方法，过滤条目的返回类型
+     */
+    override fun getItemViewType(position: Int): Int {
+        var pos = position
+        // 第一个加载mHeaderView
+        if (mHeaderView != null && position == 0) {
+            pos -= 1
+            return VIEW_HEADER
+        }
+        // 倒数第一个加载mFooterView
+        if (mFooterView != null && position == itemCount - 1) {
+            return VIEW_FOOTER
+        }
+        return getItemType(pos)
+    }
+
     /**
      * 绑定数据
      */
     override fun onBindViewHolder(holder: VH?, position: Int) {
-        if (holder != null){
-            if (getItemViewType(position) == VIEW_HEADER){
-                holder.bindHeader(mDatas.get(position))
-            }else if(getItemViewType(position) == VIEW_FOOTER){
-                holder.bindFooter(mDatas.get(position))
-            }else{
-                holder.bindHolder(mDatas.get(position))
+        if (holder != null) {
+            if (getItemViewType(position) == VIEW_HEADER) {
+                holder.bindHeader(mHeaderData)
+            } else if (getItemViewType(position) == VIEW_FOOTER) {
+                holder.bindFooter(mFooterData)
+            } else {
+                if (mHeaderView != null) {
+                    holder.bindHolder(mDatas.get(position - 1))
+
+                } else {
+                    holder.bindHolder(mDatas.get(position))
+                }
             }
         }
     }

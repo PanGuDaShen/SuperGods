@@ -3,8 +3,8 @@ package com.rmbmiss.app.mian.adapter
 import android.content.Context
 import android.view.ViewGroup
 import com.rmbmiss.app.mian.R
-import com.rmbmiss.app.mian.base.BaseAbstartViewHolder
-import com.rmbmiss.app.mian.base.BaseRecyclerAdapter
+import com.rmbmiss.app.mian.base.BaseHFAbstartViewHolder
+import com.rmbmiss.app.mian.base.BaseHFRecyclerAdapter
 import com.rmbmiss.app.mian.hodler.SetUpHolder
 
 /**
@@ -20,9 +20,9 @@ import com.rmbmiss.app.mian.hodler.SetUpHolder
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-class SetUpAdapter<T,VH:BaseAbstartViewHolder<T>>(that: Context, datas: MutableList<T>?): BaseRecyclerAdapter<T,VH>(that,datas) {
+class SetUpAdapter<T,VH: BaseHFAbstartViewHolder<T>>(that: Context, datas: MutableList<T>?): BaseHFRecyclerAdapter<T,VH>(that,datas) {
 
-    override fun onCreateHolder(parent: ViewGroup?, viewType: Int): VH? {
+    override fun onCreateHolder(parent: ViewGroup?, viewType: Int): VH {
 
         return SetUpHolder<T>(mContext,mInflater.inflate(R.layout.rvtype_menusettings,parent,false)) as VH
     }

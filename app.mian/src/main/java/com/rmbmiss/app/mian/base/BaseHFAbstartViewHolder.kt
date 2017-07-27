@@ -18,21 +18,21 @@ import com.blankj.utilcode.util.LogUtils
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-abstract class BaseAbstartViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+abstract class BaseHFAbstartViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     protected var mContext: Context? = null
 
     /**
      * 绑定头部数据,有需要时子类可以重写。
      */
-    open fun bindHeader(person: T){
+    open fun bindHeader(person: Any?){
         LogUtils.d(" bindHeader 被调用了。")
     }
 
     /**
      * 绑定尾部数据,有需要时子类可以重写。
      */
-    open fun bindFooter(person: T){
+    open fun bindFooter(person: Any?){
         LogUtils.d(" bindFooter 被调用了。")
     }
 
