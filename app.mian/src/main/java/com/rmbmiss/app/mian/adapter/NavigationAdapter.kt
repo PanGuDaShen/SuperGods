@@ -1,11 +1,15 @@
 package com.rmbmiss.app.mian.adapter
 
 import android.content.Context
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.base.BaseHFAbstartViewHolder
 import com.rmbmiss.app.mian.base.BaseHFRecyclerAdapter
+import com.rmbmiss.app.mian.click.OnClickface
 import com.rmbmiss.app.mian.databean.NavigationDatabean
 import com.rmbmiss.app.mian.hodler.NavigationBoolHolder
 import com.rmbmiss.app.mian.hodler.NavigationColorHolder
@@ -26,17 +30,17 @@ import com.rmbmiss.lib.utils.errortools.ErrorStringTools
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-class NavigationAdapter<T, VH : BaseHFAbstartViewHolder<T>>(that: Context, datas: MutableList<T>?) : BaseHFRecyclerAdapter<T, VH>(that, datas) {
+class NavigationAdapter<T, VH : BaseHFAbstartViewHolder<T>>(that: Context, datas: MutableList<T>?) : BaseHFRecyclerAdapter<T, VH>(that, datas), OnClickface {
 
-    private val BOOL = 0
-    private val MACTH = 1
-    private val COLOR = 2
-    private val DIMS = 4
-
+    companion object {
+        val BOOL = 0
+        val MACTH = 1
+        val COLOR = 2
+        val DIMS = 4
+    }
 
     override fun getItemType(position: Int): Int {
-        val key = (mDatas?.get(position) as NavigationDatabean).key
-        LogUtils.e(key+"======$position")
+        val key = (mDatas.get(position) as NavigationDatabean).key
         when(key) {
             "ntlTabDistributeEvenly" -> {
                 return BOOL
@@ -252,21 +256,183 @@ class NavigationAdapter<T, VH : BaseHFAbstartViewHolder<T>>(that: Context, datas
     /**
      * 值多选
      */
-    fun getNavigationMacthHolder(parent: ViewGroup?) = NavigationMacthHolder<T>(mContext!!, mInflater.inflate(R.layout.rvtype_navigation_three, parent, false)) as VH
+    fun getNavigationMacthHolder(parent: ViewGroup?):VH{
+        val vh = NavigationMacthHolder<T>(mContext, mInflater.inflate(R.layout.rvtype_navigation_three, parent, false))
+        vh.addOnClick(this)
+        return vh as VH
+    }
 
     /**
      * boolean 2选1
      */
-    fun getNavigationBoolHolder(parent: ViewGroup?) = NavigationBoolHolder<T>(mContext!!, mInflater.inflate(R.layout.rvtype_navigation_one, parent, false)) as VH
+    fun getNavigationBoolHolder(parent: ViewGroup?):VH{
+        val vh = NavigationBoolHolder<T>(mContext, mInflater.inflate(R.layout.rvtype_navigation_one, parent, false))
+        vh.addOnClick(this)
+        return vh as VH
+    }
 
     /**
      * 单位长度
      */
-    fun getNavigationDimsHolder(parent: ViewGroup?) = NavigationDimsHolder<T>(mContext!!, mInflater.inflate(R.layout.rvtype_navigation_four, parent, false)) as VH
+    fun getNavigationDimsHolder(parent: ViewGroup?):VH {
+        val vh = NavigationDimsHolder<T>(mContext, mInflater.inflate(R.layout.rvtype_navigation_four, parent, false))
+        vh.addOnClick(this)
+        return vh as VH
+    }
 
     /**
      * 颜色选择
      */
-    fun getNavigationColorHolder(parent: ViewGroup?) = NavigationColorHolder<T>(mContext!!, mInflater.inflate(R.layout.rvtype_navigation_two, parent, false)) as VH
+    fun getNavigationColorHolder(parent: ViewGroup?):VH{
+        val vh = NavigationColorHolder<T>(mContext!!, mInflater.inflate(R.layout.rvtype_navigation_two, parent, false))
+        vh.addOnClick(this)
+        return vh as VH
+    }
 
+//    override fun onClick(person) {
+//        Toast.makeText(mContext,"type = $type ---- boolean = $boolean",Toast.LENGTH_SHORT).show()
+//        setSetting(key)
+//    }
+    override fun <R> onClick(person: R) {
+        person as NavigationDatabean
+        setSetting(person.key)
+    }
+
+    fun setSetting(key:String){
+        when(key) {
+            "ntlTabDistributeEvenly" -> {
+
+            } //boolean：0=true， 1=false
+            "ntlDrawOrder" -> {
+            } //enum:0=indicatorUnderlineDivider,1=indicatorDividerUnderline,
+        // 2=underlineIndicatorDivider,3=underlineDividerIndicator,4=dividerIndicatorUnderline,5=dividerUnderlineIndicator
+            "ntlTabMode" -> {
+            } //enum：0=titleOnly，1=iconOnly，2=both
+            "ntlTabColorBlendMode" -> {
+            } //enum：0=none，1=defaultSelected，2=nextSelected
+            "ntlTabBackground" -> {
+            } //reference|color
+            "ntlTabOffset" -> {
+            } //dimension
+            "ntlTabSelectedCenter" -> {
+            } //boolean：0=true， 1=false
+            "ntlShowUnderline" -> {
+            } //boolean：0=true， 1=false
+            "ntlUnderlineInFront" -> {
+            } //boolean：0=true， 1=false
+            "ntlUnderlineGravity" -> {
+            } //enum：0=top， 1=bottom
+            "ntlUnderlineColor" -> {
+            } //color
+            "ntlUnderlineHeight" -> {
+            } //dimension
+            "ntlUnderlinePaddingTop" -> {
+            } //dimension
+            "ntlUnderlinePaddingBottom" -> {
+            } //dimension
+            "ntlShowDivider" -> {
+            } //boolean：0=true， 1=false
+            "ntlDividerColor" -> {
+            } //color
+            "ntlDividerColors" -> {
+            } //reference
+            "ntlDividerWidth" -> {
+            } //dimension
+            "ntlDividerPadding" -> {
+            } //dimension
+            "ntlDividerPaddingTop" -> {
+            } //dimension
+            "ntlDividerPaddingBottom" -> {
+            } //dimension
+            "ntlDividerPaddingLeft" -> {
+            } //dimension
+            "ntlDividerPaddingRight" -> {
+            } //dimension
+            "ntlShowIndicator" -> {
+            } //boolean：0=true， 1=false
+            "ntlIndicatorGravity" -> {
+            } //enum:0=top,1=center,2=bottom
+            "ntlIndicatorColor" -> {
+            } //color
+            "ntlIndicatorColors" -> {
+            } //reference
+            "ntlIndicatorHeight" -> {
+            } //dimension
+            "ntlIndicatorCornerRadius" -> {
+            } //dimension
+            "ntlIndicatorPaddingTop" -> {
+            } //dimension
+            "ntlIndicatorPaddingBottom" -> {
+            } //dimension
+            "ntlDefaultTabColor" -> {
+            } //color
+            "ntlDefaultTabColors" -> {
+            } //reference
+            "ntlSelectedTabColor" -> {
+            } //color
+            "ntlSelectedTabColors" -> {
+            } //reference
+            "ntlTabPadding" -> {
+            } //dimension
+            "ntlTabPaddingTop" -> {
+            } //dimension
+            "ntlTabPaddingBottom" -> {
+            } //dimension
+            "ntlTabPaddingLeft" -> {
+            } //dimension
+            "ntlTabPaddingRight" -> {
+            } //dimension
+            "ntlTabViewLayoutId" -> {
+            } //reference
+            "ntlTabViewTextOrImageViewId" -> {
+            } //reference
+            "ntlDrawablePadding" -> {
+            } //dimension
+            "ntlTextSize" -> {
+            } //dimension
+            "ntlTextAllCaps" -> {
+            } //boolean：0=true， 1=false
+            "ntlTextStyle" -> {
+            } //enum:0=normal,1=bold,2=italic,3=boldItalic
+            "ntlIconCrossFade" -> {
+            } //boolean：0=true， 1=false
+            "ntlIconTint" -> {
+            } //boolean：0=true， 1=false
+            "ntlBlurRadius" -> {
+            } //integer
+            "ntlDownSampleFactor" -> {
+            } //integer
+            "ntlOverlayColor" -> {
+            } //color
+            "ntlBadgeGravity" -> {
+            } //enum:0=left,1=center_left,2=center_right,3=right
+            "ntlBadgeTextColor" -> {
+            } //color
+            "ntlBadgeTextSize" -> {
+            } //dimension
+            "ntlBadgeHeight" -> {
+            } //dimension
+            "ntlBadgeCornerRadius" -> {
+            } //dimension
+            "ntlBadgeMinWidth" -> {
+            } //dimension
+            "ntlBadgeMaxWidth" -> {
+            } //dimension
+            "ntlBadgeMarginLeft" -> {
+            } //dimension
+            "ntlBadgeMarginRight" -> {
+            } //dimension
+            "ntlBadgeMarginTop" -> {
+            } //dimension
+            "ntlBadgePaddingLeftRight" -> {
+            } //dimension
+            "ntlBadgeSmallSize" -> {
+            } //dimension
+            "ntlBadgeBackground" -> {
+            } //reference|color
+            else -> {
+                ErrorStringTools.showString("NavigationAdapter 的类型值错误！")
+            }
+        }
+    }
 }

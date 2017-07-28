@@ -20,12 +20,12 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintVertical_bias="0.0"/>
 
-    <EditText
-        android:id="@+id/id_main_ev_1"
+    <TextView
+        android:id="@+id/id_main_tv_10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:hint="15dp"
+        android:text="15dp 》"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/id_main_tv_9"

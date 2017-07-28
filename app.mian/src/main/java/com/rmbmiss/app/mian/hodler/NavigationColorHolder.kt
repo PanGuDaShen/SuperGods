@@ -4,7 +4,9 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import com.rmbmiss.app.mian.R
+import com.rmbmiss.app.mian.adapter.NavigationAdapter
 import com.rmbmiss.app.mian.base.BaseHFAbstartViewHolder
+import com.rmbmiss.app.mian.click.OnClickface
 import com.rmbmiss.app.mian.databean.NavigationDatabean
 
 /**
@@ -22,6 +24,8 @@ import com.rmbmiss.app.mian.databean.NavigationDatabean
  */
 class NavigationColorHolder<T>(content: Context, view: View): BaseHFAbstartViewHolder<T>(view) {
 
+    private var onClickNavigaface: OnClickface? = null
+
     private var id_main_tv_5: TextView
     private var id_main_tv_6:TextView
 
@@ -33,6 +37,19 @@ class NavigationColorHolder<T>(content: Context, view: View): BaseHFAbstartViewH
     override fun bindHolder(person: T) {
         person as NavigationDatabean
         id_main_tv_5.text = person.key
+        id_main_tv_6.text = person.value.toString()
+        id_main_tv_6.setOnClickListener {
+            onClickNavigaface?.let {
+                it.onClick(person)
+            }
+        }
+    }
+
+    /**
+     * 添加监听事件
+     */
+    fun addOnClick(onClickNavigaface: OnClickface){
+        this.onClickNavigaface = onClickNavigaface
     }
 }
 

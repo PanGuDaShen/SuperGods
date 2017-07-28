@@ -2,10 +2,13 @@ package com.rmbmiss.app.mian.hodler
 
 import android.content.Context
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.TextView
 import com.kyleduo.switchbutton.SwitchButton
 import com.rmbmiss.app.mian.R
+import com.rmbmiss.app.mian.adapter.NavigationAdapter
 import com.rmbmiss.app.mian.base.BaseHFAbstartViewHolder
+import com.rmbmiss.app.mian.click.OnClickface
 import com.rmbmiss.app.mian.databean.NavigationDatabean
 
 /**
@@ -23,6 +26,8 @@ import com.rmbmiss.app.mian.databean.NavigationDatabean
  */
 class NavigationBoolHolder<T>(content: Context, view: View): BaseHFAbstartViewHolder<T>(view) {
 
+    private var onClickNavigaface: OnClickface? = null
+
     private var id_main_tv_3:TextView
     private var id_main_sb_1: SwitchButton
 
@@ -34,6 +39,20 @@ class NavigationBoolHolder<T>(content: Context, view: View): BaseHFAbstartViewHo
     override fun bindHolder(person: T) {
         person as NavigationDatabean
         id_main_tv_3.text = person.key
+        id_main_sb_1.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
+            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+                onClickNavigaface?.let {
+                    it.onClick(person)
+                }
+            }
+        })
+    }
+
+    /**
+     * 添加监听事件
+     */
+    fun addOnClick(onClickNavigaface: OnClickface){
+        this.onClickNavigaface = onClickNavigaface
     }
 }
 

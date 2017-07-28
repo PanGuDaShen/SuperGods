@@ -27,7 +27,7 @@ object NavigationList {
             NavigationDatabean("ntlTabBackground", 0), //reference|color
             NavigationDatabean("ntlTabOffset", 0), //dimension
             NavigationDatabean("ntlTabSelectedCenter", 0), //boolean：0=true， 1=false
-            NavigationDatabean("ntlShowUnderline", 0), //boolean：0=true， 1=false
+            NavigationDatabean("ntlShowUnderline", 1), //boolean：0=true， 1=false
             NavigationDatabean("ntlUnderlineInFront", 0), //boolean：0=true， 1=false
             NavigationDatabean("ntlUnderlineGravity", 0), //enum：0=top， 1=bottom
             NavigationDatabean("ntlUnderlineColor", 0), //color

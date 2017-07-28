@@ -1,10 +1,13 @@
 package com.rmbmiss.app.mian.hodler
 
 import android.content.Context
+import android.text.Editable
 import android.view.View
 import android.widget.TextView
 import com.rmbmiss.app.mian.R
+import com.rmbmiss.app.mian.adapter.NavigationAdapter
 import com.rmbmiss.app.mian.base.BaseHFAbstartViewHolder
+import com.rmbmiss.app.mian.click.OnClickface
 import com.rmbmiss.app.mian.databean.NavigationDatabean
 
 /**
@@ -22,6 +25,8 @@ import com.rmbmiss.app.mian.databean.NavigationDatabean
  */
 class NavigationMacthHolder<T>(content: Context, view: View): BaseHFAbstartViewHolder<T>(view) {
 
+    private var onClickNavigaface: OnClickface? = null
+
     private var id_main_tv_7: TextView
     private var id_main_tv_8: TextView
 
@@ -33,5 +38,18 @@ class NavigationMacthHolder<T>(content: Context, view: View): BaseHFAbstartViewH
     override fun bindHolder(person: T) {
         person as NavigationDatabean
         id_main_tv_7.text = person.key
+        id_main_tv_8.text = person.value.toString()
+        id_main_tv_8.setOnClickListener {
+            onClickNavigaface?.let {
+                it.onClick(person)
+            }
+        }
+    }
+
+    /**
+     * 添加监听事件
+     */
+    fun addOnClick(onClickNavigaface: OnClickface){
+        this.onClickNavigaface = onClickNavigaface
     }
 }
