@@ -46,4 +46,8 @@ class WelcomeActivity : BaseSuperActivity() {
             }
         }, 2000)
     }
+
+    private fun acp(){
+
+    }
 }

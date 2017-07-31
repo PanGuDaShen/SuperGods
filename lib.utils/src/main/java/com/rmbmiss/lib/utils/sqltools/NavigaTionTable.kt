@@ -15,7 +15,7 @@ package com.rmbmiss.lib.utils.sqltools
  */
 object NavigaTionTable {
     //创建一张菜单设置默认属性naviga_tion表
-    val stu_table = "create table naviga_tion(" +
+    val naviga_tion = "create table naviga_tion(" +
             "id integer primary key autoincrement," + // id唯一键自动增长
             "ntlTabDistributeEvenly integer," + // 布尔值：0=true， 1=false
             "ntlDrawOrder integer," + //整型：0.1.2.3.4.5 有对应的attr.xml参照《name=NiceTabLayout》

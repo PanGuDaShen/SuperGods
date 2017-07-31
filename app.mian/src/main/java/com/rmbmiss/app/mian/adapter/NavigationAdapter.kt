@@ -1,11 +1,9 @@
 package com.rmbmiss.app.mian.adapter
 
 import android.content.Context
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.ToastUtils
 import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.base.BaseHFAbstartViewHolder
 import com.rmbmiss.app.mian.base.BaseHFRecyclerAdapter
@@ -16,6 +14,7 @@ import com.rmbmiss.app.mian.hodler.NavigationColorHolder
 import com.rmbmiss.app.mian.hodler.NavigationDimsHolder
 import com.rmbmiss.app.mian.hodler.NavigationMacthHolder
 import com.rmbmiss.lib.utils.errortools.ErrorStringTools
+import com.rmbmiss.lib.utils.sqltools.DBHelper
 
 /**
  * ================================================
@@ -284,7 +283,7 @@ class NavigationAdapter<T, VH : BaseHFAbstartViewHolder<T>>(that: Context, datas
      * 颜色选择
      */
     fun getNavigationColorHolder(parent: ViewGroup?):VH{
-        val vh = NavigationColorHolder<T>(mContext!!, mInflater.inflate(R.layout.rvtype_navigation_two, parent, false))
+        val vh = NavigationColorHolder<T>(mContext, mInflater.inflate(R.layout.rvtype_navigation_two, parent, false))
         vh.addOnClick(this)
         return vh as VH
     }
@@ -299,6 +298,7 @@ class NavigationAdapter<T, VH : BaseHFAbstartViewHolder<T>>(that: Context, datas
     }
 
     fun setSetting(key:String){
+        Toast.makeText(mContext,key,Toast.LENGTH_SHORT).show()
         when(key) {
             "ntlTabDistributeEvenly" -> {
 
@@ -435,4 +435,5 @@ class NavigationAdapter<T, VH : BaseHFAbstartViewHolder<T>>(that: Context, datas
             }
         }
     }
+
 }

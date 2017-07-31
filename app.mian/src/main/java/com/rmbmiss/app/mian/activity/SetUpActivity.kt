@@ -1,5 +1,6 @@
 package com.rmbmiss.app.mian.activity
 
+import android.support.v7.widget.LinearLayoutManager
 import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.adapter.SetUpAdapter
 import com.rmbmiss.app.mian.base.BaseSuperActivity
@@ -42,7 +43,7 @@ class SetUpActivity :BaseSuperActivity() {
         }
         id_main_rv_1?.let {
             mSetupAdapter = SetUpAdapter(applicationContext,mList)
-            RecyclerViewTools.setRvLinear(this,it,-1).adapter = mSetupAdapter
+            RecyclerViewTools.setRvLinear(this,it,LinearLayoutManager.VERTICAL).adapter = mSetupAdapter
         }
     }
 

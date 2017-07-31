@@ -1,11 +1,17 @@
 package com.rmbmiss.app.mian.activity
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Environment
+import android.telephony.TelephonyManager
 import android.view.View
 import android.widget.Toast
 import co.aenterhy.toggleswitch.ToggleSwitchButton
 import com.blankj.utilcode.util.LogUtils
+import com.mylhyl.acp.Acp
+import com.mylhyl.acp.AcpListener
+import com.mylhyl.acp.AcpOptions
 import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.adapter.SampleFragmentPagerAdapter
 import com.rmbmiss.app.mian.base.BaseSuperActivity
@@ -14,6 +20,7 @@ import com.rmbmiss.lib.utils.pathtools.DirPathTools
 import com.rmbmiss.nicetablibrary.NiceTabLayout
 import com.rmbmiss.nicetablibrary.NiceTabStrip
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 
 class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedListener
 {
@@ -72,6 +79,7 @@ class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedLi
     }
 
     override fun initData() {
+        acp()
         for (i in 0 until mTexts.size){
             mTabs.add(i, SamplePagerItem(mTexts[i],mIcon[i],mIconRound[i],mColor[i],mClolorRound[i]))
         }
@@ -116,4 +124,61 @@ class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedLi
         id_main_ntl_1.invalidateBlur()
     }
 
+    /**
+     * 权限检查
+     */
+    fun acp(){
+        Acp.getInstance(this)
+                .request(AcpOptions.Builder().setPermissions(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ).build(),object :AcpListener{
+                    // 权限允许
+                    override fun onGranted() {
+                        Toast.makeText(applicationContext,"权限允许",Toast.LENGTH_SHORT).show()
+                        writeSD()
+                    }
+                    // 权限拒绝
+                    override fun onDenied(permissions: MutableList<String>?) {
+                        Toast.makeText(applicationContext,"权限拒绝",Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+
+                })
+    }
+
+    private fun writeSD() {
+        val acpDir = getCacheDir("acp", applicationContext)
+        if (acpDir != null)
+            Toast.makeText(applicationContext,"写SD成功：" + acpDir.absolutePath,Toast.LENGTH_SHORT).show()
+    }
+
+    private fun getIMEI() {
+        val tm = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        if (tm != null)
+            Toast.makeText(applicationContext,"读imei成功：" + tm.deviceId,Toast.LENGTH_SHORT).show()
+    }
+
+    fun getCacheDir(dirName: String, context: Context): File? {
+        val result: File
+        if (existsSdcard()) {
+            val cacheDir = context.externalCacheDir
+            if (cacheDir == null) {
+                result = File(Environment.getExternalStorageDirectory(),
+                        "Android/data/" + context.packageName + "/cache/" + dirName)
+            } else {
+                result = File(cacheDir, dirName)
+            }
+        } else {
+            result = File(context.cacheDir, dirName)
+        }
+        if (result.exists() || result.mkdirs()) {
+            return result
+        } else {
+            return null
+        }
+    }
+
+    fun existsSdcard(): Boolean {
+        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+    }
 }

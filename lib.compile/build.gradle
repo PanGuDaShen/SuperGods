@@ -43,5 +43,8 @@ dependencies {
     compile 'co.aenterhy:toggleswitch:1.0.0'
     //https://github.com/kyleduo/SwitchButton
     compile 'com.kyleduo.switchbutton:library:1.4.6'
+
+    // android 权限：https://github.com/mylhyl/AndroidAcp
+    compile 'com.mylhyl:acp:1.1.7'
 }
 
