@@ -41,4 +41,9 @@
         app:layout_constraintBottom_toTopOf="@+id/id_main_ntl_1"
         app:layout_constraintVertical_bias="0.9"/>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/xxxxxx"
+        android:src="@mipmap/ic_launcher_round"/>
 </android.support.constraint.ConstraintLayout>

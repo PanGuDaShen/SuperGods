@@ -1,8 +1,11 @@
 package com.rmbmiss.supergod.activity
 
+import android.Manifest
 import android.os.Handler
+import android.widget.Toast
 import com.rmbmiss.supergod.R
 import com.rmbmiss.supergod.base.BaseSuperActivity
+import kotlinx.android.synthetic.main.activity_welcome.*
 import net.wequick.small.Small
 
 class WelcomeActivity : BaseSuperActivity() {
@@ -37,17 +40,14 @@ class WelcomeActivity : BaseSuperActivity() {
             }
             uriName = sb.toString()
         }
-
         Handler().postDelayed({
             //监听宿主中的插件加载是否完成。
             Small.setUp(this@WelcomeActivity) {
                 Small.openUri(uriName, this@WelcomeActivity)    //跳转到指定插件页面
                 finish()
             }
-        }, 2000)
-    }
-
-    private fun acp(){
+        }, 200000)
 
     }
+
 }

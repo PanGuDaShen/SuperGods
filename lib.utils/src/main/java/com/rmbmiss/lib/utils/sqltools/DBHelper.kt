@@ -24,22 +24,31 @@ import com.rmbmiss.lib.utils.pathtools.DirPathTools
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-class DBHelper(context: Context,dbName:String): SQLiteOpenHelper(context, dbName, null, 2) {
-
-    private var dbName:String?=null
-
+class DBHelper(mContext: Context, mName: String?): DatabaseOpenHelper(mContext, mName,null, 1) {
+    private var mContext: Context?=null
+    private var mName:String?=null
+    private var mNewVersion: Int=0
     init {
-        this.dbName = dbName
+        this.mContext = mContext
+        this.mName = mName
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        when(dbName){
-            "mian.db" -> db.execSQL("create table person(id integer primary key autoincrement,name char(20),salary char(20),phone char(20))")//db.execSQL(NavigaTionTable.naviga_tion)
+        mName?.let {
+            when(it){
+                "mian.db" -> {Toast.makeText(mContext,"$mName",Toast.LENGTH_SHORT).show()}
+                "mall.db" -> {Toast.makeText(mContext,"$mName",Toast.LENGTH_SHORT).show()}
+                "news.db" -> {Toast.makeText(mContext,"$mName",Toast.LENGTH_SHORT).show()}
+                else -> {
+                    Toast.makeText(mContext,"错误的数据库！",Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        Toast.makeText(mContext,"111111111111111",Toast.LENGTH_SHORT).show()
     }
+
 
 }

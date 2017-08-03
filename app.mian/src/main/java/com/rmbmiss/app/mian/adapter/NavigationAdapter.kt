@@ -301,7 +301,8 @@ class NavigationAdapter<T, VH : BaseHFAbstartViewHolder<T>>(that: Context, datas
         Toast.makeText(mContext,key,Toast.LENGTH_SHORT).show()
         when(key) {
             "ntlTabDistributeEvenly" -> {
-
+               var db = DBHelper(mContext,"mian.db")
+                db.writableDatabase
             } //boolean：0=true， 1=false
             "ntlDrawOrder" -> {
             } //enum:0=indicatorUnderlineDivider,1=indicatorDividerUnderline,

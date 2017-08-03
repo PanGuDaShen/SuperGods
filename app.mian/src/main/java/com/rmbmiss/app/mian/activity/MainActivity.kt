@@ -5,25 +5,32 @@ import android.content.Context
 import android.content.Intent
 import android.os.Environment
 import android.telephony.TelephonyManager
-import android.view.View
 import android.widget.Toast
 import co.aenterhy.toggleswitch.ToggleSwitchButton
-import com.blankj.utilcode.util.LogUtils
-import com.mylhyl.acp.Acp
-import com.mylhyl.acp.AcpListener
-import com.mylhyl.acp.AcpOptions
 import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.adapter.SampleFragmentPagerAdapter
 import com.rmbmiss.app.mian.base.BaseSuperActivity
 import com.rmbmiss.app.mian.databean.SamplePagerItem
-import com.rmbmiss.lib.utils.pathtools.DirPathTools
 import com.rmbmiss.nicetablibrary.NiceTabLayout
 import com.rmbmiss.nicetablibrary.NiceTabStrip
+import com.yanzhenjie.permission.AndPermission
+import com.yanzhenjie.permission.PermissionListener
+import com.yanzhenjie.permission.Rationale
+import com.yanzhenjie.permission.RationaleListener
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
+import android.support.v4.app.ActivityCompat
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.support.v4.content.ContextCompat
+import android.os.Build
+import android.os.Bundle
+import com.rmbmiss.app.mian.dialog.AcpDialog
+
 
 class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedListener
 {
+    private val REQUEST_CODE_PERMISSION_OTHER = 101
 
     private val mTexts = mutableListOf<String>("0000000000","11111111111111","222222222","3333333333333333333","444444","55","66","77")
     private val mIconRound = mutableListOf<Int>(R.mipmap.ic_launcher,R.mipmap.ic_launcher,R.mipmap.ic_launcher,R.mipmap.ic_launcher
@@ -76,10 +83,13 @@ class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedLi
                 startActivity(Intent(applicationContext,SetUpActivity::class.java))
             }
         })
+        xxxxxx.setOnClickListener {
+            acp()
+
+          }
     }
 
     override fun initData() {
-        acp()
         for (i in 0 until mTexts.size){
             mTabs.add(i, SamplePagerItem(mTexts[i],mIcon[i],mIconRound[i],mColor[i],mClolorRound[i]))
         }
@@ -128,57 +138,71 @@ class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedLi
      * 权限检查
      */
     fun acp(){
-        Acp.getInstance(this)
-                .request(AcpOptions.Builder().setPermissions(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ).build(),object :AcpListener{
-                    // 权限允许
-                    override fun onGranted() {
-                        Toast.makeText(applicationContext,"权限允许",Toast.LENGTH_SHORT).show()
-                        writeSD()
-                    }
-                    // 权限拒绝
-                    override fun onDenied(permissions: MutableList<String>?) {
-                        Toast.makeText(applicationContext,"权限拒绝",Toast.LENGTH_SHORT).show()
-                        finish()
-                    }
 
-                })
-    }
-
-    private fun writeSD() {
-        val acpDir = getCacheDir("acp", applicationContext)
-        if (acpDir != null)
-            Toast.makeText(applicationContext,"写SD成功：" + acpDir.absolutePath,Toast.LENGTH_SHORT).show()
-    }
-
-    private fun getIMEI() {
-        val tm = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        if (tm != null)
-            Toast.makeText(applicationContext,"读imei成功：" + tm.deviceId,Toast.LENGTH_SHORT).show()
-    }
-
-    fun getCacheDir(dirName: String, context: Context): File? {
-        val result: File
-        if (existsSdcard()) {
-            val cacheDir = context.externalCacheDir
-            if (cacheDir == null) {
-                result = File(Environment.getExternalStorageDirectory(),
-                        "Android/data/" + context.packageName + "/cache/" + dirName)
-            } else {
-                result = File(cacheDir, dirName)
-            }
-        } else {
-            result = File(context.cacheDir, dirName)
+        /**
+         * 为了不重复显示dialog，在显示对话框之前移除正在显示的对话框。
+         */
+        val ft = supportFragmentManager.beginTransaction()
+        val fragment = supportFragmentManager.findFragmentByTag("dialog")
+        if (null != fragment) {
+            ft.remove(fragment)
         }
-        if (result.exists() || result.mkdirs()) {
-            return result
-        } else {
-            return null
-        }
+
+        AcpDialog.newAcpDialog(null)
+                .setStyleAnimont(R.style.animate_dialog)
+                .setOnAcpDialoglister(object : AcpDialog.OnAcpDialoglister{
+                    override fun onClick(str: String) {
+                        when(str){
+                            "NO" -> Toast.makeText(this@MainActivity,"$str",Toast.LENGTH_SHORT).show()
+                            "YES" -> Toast.makeText(this@MainActivity,"$str",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                }).show(ft,"dialog")
+//        AndPermission.with(this)
+//                .requestCode(REQUEST_CODE_PERMISSION_OTHER)
+//                .permission(Manifest.permission.WRITE_CALENDAR,Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                        Manifest.permission.SEND_SMS,Manifest.permission.READ_SMS,
+//                        Manifest.permission.CALL_PHONE)
+//                .callback(object : PermissionListener{
+//                    override fun onSucceed(requestCode: Int, grantPermissions: MutableList<String>) {
+//                        when(requestCode){
+//                            REQUEST_CODE_PERMISSION_OTHER -> {
+//                                Toast.makeText(this@MainActivity,"AAA",Toast.LENGTH_SHORT).show()
+//                            }
+//                        }
+//                    }
+//
+//                    override fun onFailed(requestCode: Int, deniedPermissions: MutableList<String>) {
+//                        when (requestCode) {
+//                            REQUEST_CODE_PERMISSION_OTHER -> {
+//                                Toast.makeText(this@MainActivity, "BBB", Toast.LENGTH_SHORT).show()
+//                            }
+//                        }
+//                        // 用户否勾选了不再提示并且拒绝了权限，那么提示用户到设置中授权。
+////                        if (AndPermission.hasAlwaysDeniedPermission(this@MainActivity, deniedPermissions)) {
+////                            // 第一种：用默认的提示语。
+////                            AndPermission.defaultSettingDialog(this@MainActivity, 300).show()
+////                        }
+//                    }
+//                })
+//                .rationale(object :RationaleListener{
+//                    override fun showRequestPermissionRationale(requestCode: Int, rationale: Rationale?) {
+//                        // 这里的对话框可以自定义，只要调用rationale.resume()就可以继续申请。
+////                        AndPermission.rationaleDialog(this@MainActivity, rationale).show()
+//                        AcpDialog.newAcpDialog(null)
+//                                .setOnAcpDialoglister(object : AcpDialog.OnAcpDialoglister{
+//                                    override fun onClick(str: String) {
+//                                        when(str){
+//                                            "NO" -> Toast.makeText(this@MainActivity,"$str",Toast.LENGTH_SHORT).show()
+//                                            "YES" -> Toast.makeText(this@MainActivity,"$str",Toast.LENGTH_SHORT).show()
+//                                        }
+//                                    }
+//
+//                                })
+//                        Toast.makeText(this@MainActivity,"CCC",Toast.LENGTH_SHORT).show()
+//                    }
+//                }).start()
     }
 
-    fun existsSdcard(): Boolean {
-        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
-    }
 }
