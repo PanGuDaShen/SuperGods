@@ -1,6 +1,19 @@
 package com.rmbmiss.app.mian.base
 
+import android.Manifest
 import android.os.Bundle
+import android.Manifest.permission
+import android.support.v4.app.ActivityCompat
+import android.content.DialogInterface
+import android.content.pm.PackageManager
+import android.support.v4.content.ContextCompat
+import android.os.Build
+import android.annotation.TargetApi
+import android.app.AlertDialog
+import android.graphics.Color
+import android.support.annotation.RequiresApi
+import android.widget.Toast
+
 
 /**
  * ================================================
@@ -55,4 +68,5 @@ abstract class BaseSuperActivity: BaseActivity() {
     override fun translucentStatusBar(): Boolean {
         return true
     }
+
 }

@@ -33,7 +33,6 @@
         </activity>
         <activity android:name=".activity.SetUpActivity"/>
         <activity android:name=".activity.NavigationActivity"/>
-
     </application>
 
 </manifest>

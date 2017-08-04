@@ -1,10 +1,8 @@
 package com.rmbmiss.app.mian.activity
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.os.Environment
-import android.telephony.TelephonyManager
+import android.os.Build
 import android.widget.Toast
 import co.aenterhy.toggleswitch.ToggleSwitchButton
 import com.rmbmiss.app.mian.R
@@ -18,19 +16,9 @@ import com.yanzhenjie.permission.PermissionListener
 import com.yanzhenjie.permission.Rationale
 import com.yanzhenjie.permission.RationaleListener
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
-import android.support.v4.app.ActivityCompat
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.support.v4.content.ContextCompat
-import android.os.Build
-import android.os.Bundle
-import com.rmbmiss.app.mian.dialog.AcpDialog
-
 
 class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedListener
 {
-    private val REQUEST_CODE_PERMISSION_OTHER = 101
 
     private val mTexts = mutableListOf<String>("0000000000","11111111111111","222222222","3333333333333333333","444444","55","66","77")
     private val mIconRound = mutableListOf<Int>(R.mipmap.ic_launcher,R.mipmap.ic_launcher,R.mipmap.ic_launcher,R.mipmap.ic_launcher
@@ -84,8 +72,20 @@ class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedLi
             }
         })
         xxxxxx.setOnClickListener {
-            acp()
-
+            // 申请多个权限。
+            AndPermission.with(this)
+                    .requestCode(REQUEST_CODE_PERMISSION_OTHER)
+                    .permission(Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_SMS)
+                    .callback(permissionListener)
+                    // rationale作用是：用户拒绝一次权限，再次申请时先征求用户同意，再打开授权对话框；
+                    // 这样避免用户勾选不再提示，导致以后无法申请权限。
+                    // 你也可以不设置。
+                    .rationale { requestCode, rationale ->
+                        // 这里的对话框可以自定义，只要调用rationale.resume()就可以继续申请。
+                        AndPermission.rationaleDialog(this@MainActivity, rationale)
+                                .show()
+                    }
+                    .start()
           }
     }
 
@@ -109,7 +109,7 @@ class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedLi
     /**
      * 设置信息提示个数
      */
-    fun invaliBadge(map: MutableMap<Int,String>){
+    fun invaliBadge(map: MutableMap<Int,String>?){
         map?.let {
             it.forEach {
                 //key 代表第几个item  ，value 代表显示的内容
@@ -139,70 +139,50 @@ class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedLi
      */
     fun acp(){
 
-        /**
-         * 为了不重复显示dialog，在显示对话框之前移除正在显示的对话框。
-         */
-        val ft = supportFragmentManager.beginTransaction()
-        val fragment = supportFragmentManager.findFragmentByTag("dialog")
-        if (null != fragment) {
-            ft.remove(fragment)
-        }
-
-        AcpDialog.newAcpDialog(null)
-                .setStyleAnimont(R.style.animate_dialog)
-                .setOnAcpDialoglister(object : AcpDialog.OnAcpDialoglister{
-                    override fun onClick(str: String) {
-                        when(str){
-                            "NO" -> Toast.makeText(this@MainActivity,"$str",Toast.LENGTH_SHORT).show()
-                            "YES" -> Toast.makeText(this@MainActivity,"$str",Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                }).show(ft,"dialog")
-//        AndPermission.with(this)
-//                .requestCode(REQUEST_CODE_PERMISSION_OTHER)
-//                .permission(Manifest.permission.WRITE_CALENDAR,Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                        Manifest.permission.SEND_SMS,Manifest.permission.READ_SMS,
-//                        Manifest.permission.CALL_PHONE)
-//                .callback(object : PermissionListener{
-//                    override fun onSucceed(requestCode: Int, grantPermissions: MutableList<String>) {
-//                        when(requestCode){
-//                            REQUEST_CODE_PERMISSION_OTHER -> {
-//                                Toast.makeText(this@MainActivity,"AAA",Toast.LENGTH_SHORT).show()
-//                            }
+//        /**
+//         * 为了不重复显示dialog，在显示对话框之前移除正在显示的对话框。
+//         */
+//        val ft = supportFragmentManager.beginTransaction()
+//        val fragment = supportFragmentManager.findFragmentByTag("dialog")
+//        if (null != fragment) {
+//            ft.remove(fragment)
+//        }
+//
+//        AcpDialog.newAcpDialog(null)
+//                .setStyleAnimont(R.style.animate_dialog)
+//                .setOnAcpDialoglister(object : AcpDialog.OnAcpDialoglister{
+//                    override fun onClick(str: String) {
+//                        when(str){
+//                            "NO" -> Toast.makeText(this@MainActivity,"$str",Toast.LENGTH_SHORT).show()
+//                            "YES" -> Toast.makeText(this@MainActivity,"$str",Toast.LENGTH_SHORT).show()
 //                        }
 //                    }
 //
-//                    override fun onFailed(requestCode: Int, deniedPermissions: MutableList<String>) {
-//                        when (requestCode) {
-//                            REQUEST_CODE_PERMISSION_OTHER -> {
-//                                Toast.makeText(this@MainActivity, "BBB", Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//                        // 用户否勾选了不再提示并且拒绝了权限，那么提示用户到设置中授权。
-////                        if (AndPermission.hasAlwaysDeniedPermission(this@MainActivity, deniedPermissions)) {
-////                            // 第一种：用默认的提示语。
-////                            AndPermission.defaultSettingDialog(this@MainActivity, 300).show()
-////                        }
-//                    }
-//                })
-//                .rationale(object :RationaleListener{
-//                    override fun showRequestPermissionRationale(requestCode: Int, rationale: Rationale?) {
-//                        // 这里的对话框可以自定义，只要调用rationale.resume()就可以继续申请。
-////                        AndPermission.rationaleDialog(this@MainActivity, rationale).show()
-//                        AcpDialog.newAcpDialog(null)
-//                                .setOnAcpDialoglister(object : AcpDialog.OnAcpDialoglister{
-//                                    override fun onClick(str: String) {
-//                                        when(str){
-//                                            "NO" -> Toast.makeText(this@MainActivity,"$str",Toast.LENGTH_SHORT).show()
-//                                            "YES" -> Toast.makeText(this@MainActivity,"$str",Toast.LENGTH_SHORT).show()
-//                                        }
-//                                    }
-//
-//                                })
-//                        Toast.makeText(this@MainActivity,"CCC",Toast.LENGTH_SHORT).show()
-//                    }
-//                }).start()
+//                }).show(ft,"dialog")
+
     }
 
+    private val REQUEST_CODE_PERMISSION_SD = 100
+    private val REQUEST_CODE_PERMISSION_OTHER = 101
+    /**
+     * 回调监听。
+     */
+    private var permissionListener = object : PermissionListener
+    {
+        override fun onFailed(requestCode: Int, deniedPermissions: MutableList<String>) {
+
+        }
+
+        override fun onSucceed(requestCode: Int, grantPermissions: List<String>) {
+            when (requestCode) {
+                REQUEST_CODE_PERMISSION_SD -> {
+                    Toast.makeText(this@MainActivity, "AAA", Toast.LENGTH_SHORT).show()
+                }
+                REQUEST_CODE_PERMISSION_OTHER -> {
+                    Toast.makeText(this@MainActivity, "BBB", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    }
 }
