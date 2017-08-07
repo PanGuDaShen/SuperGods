@@ -1,20 +1,17 @@
 package com.rmbmiss.app.mian.activity
 
-import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.widget.Toast
 import co.aenterhy.toggleswitch.ToggleSwitchButton
+import com.blankj.utilcode.util.PermissionUtils
 import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.adapter.SampleFragmentPagerAdapter
 import com.rmbmiss.app.mian.base.BaseSuperActivity
 import com.rmbmiss.app.mian.databean.SamplePagerItem
+import com.rmbmiss.lib.utils.permission.PermissionTools
 import com.rmbmiss.nicetablibrary.NiceTabLayout
 import com.rmbmiss.nicetablibrary.NiceTabStrip
-import com.yanzhenjie.permission.AndPermission
-import com.yanzhenjie.permission.PermissionListener
-import com.yanzhenjie.permission.Rationale
-import com.yanzhenjie.permission.RationaleListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedListener
@@ -72,21 +69,8 @@ class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedLi
             }
         })
         xxxxxx.setOnClickListener {
-            // 申请多个权限。
-            AndPermission.with(this)
-                    .requestCode(REQUEST_CODE_PERMISSION_OTHER)
-                    .permission(Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_SMS)
-                    .callback(permissionListener)
-                    // rationale作用是：用户拒绝一次权限，再次申请时先征求用户同意，再打开授权对话框；
-                    // 这样避免用户勾选不再提示，导致以后无法申请权限。
-                    // 你也可以不设置。
-                    .rationale { requestCode, rationale ->
-                        // 这里的对话框可以自定义，只要调用rationale.resume()就可以继续申请。
-                        AndPermission.rationaleDialog(this@MainActivity, rationale)
-                                .show()
-                    }
-                    .start()
-          }
+            acp()
+        }
     }
 
     override fun initData() {
@@ -160,29 +144,31 @@ class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedLi
 //
 //                }).show(ft,"dialog")
 
+        // 申请多个权限。
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PermissionUtils.requestPermissions(this,1,PermissionTools.SMS,object :PermissionUtils.OnPermissionListener{
+                override fun onPermissionGranted() {
+                    Toast.makeText(this@MainActivity,"无权限申请时处理",Toast.LENGTH_SHORT).show()
+                }
+                override fun onPermissionDenied(deniedPermissions: Array<out String>?) {
+                    Toast.makeText(this@MainActivity,"权限申请处理",Toast.LENGTH_SHORT).show()
+                }
+            },object :PermissionUtils.RationaleHandler(){
+                override fun showRationale() {
+                    Toast.makeText(this@MainActivity,"权限申请用户勾选不在询问时处理",Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
     }
 
-    private val REQUEST_CODE_PERMISSION_SD = 100
-    private val REQUEST_CODE_PERMISSION_OTHER = 101
-    /**
-     * 回调监听。
-     */
-    private var permissionListener = object : PermissionListener
-    {
-        override fun onFailed(requestCode: Int, deniedPermissions: MutableList<String>) {
 
-        }
-
-        override fun onSucceed(requestCode: Int, grantPermissions: List<String>) {
-            when (requestCode) {
-                REQUEST_CODE_PERMISSION_SD -> {
-                    Toast.makeText(this@MainActivity, "AAA", Toast.LENGTH_SHORT).show()
-                }
-                REQUEST_CODE_PERMISSION_OTHER -> {
-                    Toast.makeText(this@MainActivity, "BBB", Toast.LENGTH_SHORT).show()
-                }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            1 -> {
+                Toast.makeText(this@MainActivity,"权限申请拒绝时处理",Toast.LENGTH_SHORT).show()
             }
         }
-
     }
+
 }
