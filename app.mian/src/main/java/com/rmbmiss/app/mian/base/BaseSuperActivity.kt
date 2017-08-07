@@ -13,6 +13,7 @@ import android.app.AlertDialog
 import android.graphics.Color
 import android.support.annotation.RequiresApi
 import android.widget.Toast
+import com.rmbmiss.lib.utils.permission.PermissionTools
 
 
 /**
@@ -67,6 +68,12 @@ abstract class BaseSuperActivity: BaseActivity() {
 
     override fun translucentStatusBar(): Boolean {
         return true
+    }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionTools.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
 }

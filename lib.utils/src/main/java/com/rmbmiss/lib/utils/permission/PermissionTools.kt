@@ -1,26 +1,16 @@
-/*
- * Copyright © Yan Zhenjie
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.rmbmiss.lib.utils.permission
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import com.blankj.utilcode.util.LogUtils
 
 /**
  * ================================================
@@ -50,8 +40,10 @@ object PermissionTools {
     var STORAGE: Array<String>  //sd卡读写权限组
 
     // 声明一个集合，在后面的代码中用来存储用户拒绝授权的权
-    var mPermissionList: Array<String>? = null
-    var mList: MutableSet<String>? = null
+    private var mPermissionArray: Array<String>? = null
+    private var mList: MutableSet<String>? = null
+
+    var code = 0
 
     init {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -87,7 +79,7 @@ object PermissionTools {
     }
 
     /**
-     * 申请权限
+     * 初始化申请权限
      */
     fun with(context:Activity): PermissionTools {
         mContext = context
@@ -104,8 +96,9 @@ object PermissionTools {
         for (permissions in permissionsArray){
             for (miss in permissions){
                 mContext?.let {
-                    if (ContextCompat.checkSelfPermission(it, miss) != PackageManager.PERMISSION_GRANTED) {
+                    if (selfPermiss(miss)){
                         mList?.add(miss)
+                        LogUtils.e("++++++++++++++++++++++++++"+miss)
                     }
                 }
             }
@@ -114,15 +107,24 @@ object PermissionTools {
     }
 
     /**
-     * 添加权限组
+     * 添加非权限组
      */
     fun permission(vararg permissionsArray: String): PermissionTools {
         if (mList == null){
             mList = mutableSetOf<String>()
         }
         for (miss in permissionsArray){
-            mList?.let { it.add(miss) }
+            mList?.let { 
+                if (selfPermiss(miss)){
+                    it.add(miss)
+                }
+            }
         }
+        return this
+    }
+
+    fun setCodes(code:Int): PermissionTools {
+        this.code = code
         return this
     }
 
@@ -130,19 +132,100 @@ object PermissionTools {
      * 申请权限
      */
     fun requestPermissions(): PermissionTools {
-        if (mPermissionList != null) {
-            mContext?.let {
-                //申请WRITE_EXTERNAL_STORAGE权限
-                ActivityCompat.requestPermissions(it, mPermissionList!!, 0)
+        if (mContext != null) {
+            mPermissionArray?.let {
+                if (it.size > 0) {
+                    //申请WRITE_EXTERNAL_STORAGE权限
+                    ActivityCompat.requestPermissions(mContext!!, it, code)
+                }
             }
         }
         return this
     }
 
-    fun getPermission(): Array<String>? {
+    /**
+     * set权限集合转化成数组权限集合
+     */
+    fun getPermission(): PermissionTools {
         mList?.let {
-            mPermissionList = it.toTypedArray<String>()
+            mPermissionArray = it.toTypedArray<String>()
         }
-        return mPermissionList
+        return this
+    }
+
+    /**
+     * 检查权限
+     */
+    fun selfPermiss(miss:String):Boolean{
+        // 需要进行申请授权
+        if (ContextCompat.checkSelfPermission(mContext!!,miss) == PackageManager.PERMISSION_DENIED){
+            return true
+        }
+        return false
+    }
+
+    /**
+     * 用户是否勾选不在询问,true 没有，false 有
+     */
+    fun showPermiss(miss: String): Boolean{
+        mContext?.let {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(it,miss)){
+                return false
+            }
+        }
+        return true
+    }
+
+    /**
+     * 回调处理
+     */
+    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when(requestCode){
+            code -> {
+
+                var ra = mutableSetOf<String>()
+                var no = mutableSetOf<String>()
+
+                if (grantResults.size > 0){
+                    for (i in 0 until grantResults.size){
+                        if (grantResults[i] == PackageManager.PERMISSION_DENIED){ // 未授权调用
+                            if (showPermiss(permissions[i])){ // 勾选不在询问调用
+                                no.add(permissions[i])
+                            }else{ // 拒绝权限调用
+                                ra.add(permissions[i])
+                            }
+                        }
+                    }
+                    onPermissListener?.let {
+                        if (ra.size > 0) {
+                            it.onRationale(code,ra)  // 不在询问调用
+                        }else if (no.size > 0) {
+                            it.onNoRequce(code,no) //拒绝权限调用
+                        }else {
+                            it.onSourse()
+                        }
+                    }
+                }else{
+                    onPermissListener?.let {it.onSourse()}
+                }
+            }
+        }
+    }
+
+    private var onPermissListener:OnPermissListener? = null
+
+    fun addOnPermissListener(listener:OnPermissListener): PermissionTools {
+        onPermissListener = listener
+        return this
+    }
+
+    /**
+     * 打开app权限设置页面
+     */
+    fun openPermissManger(content:Activity){
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", content.getPackageName(), null)
+        intent.data = uri
+        content.startActivityForResult(intent,300)
     }
 }

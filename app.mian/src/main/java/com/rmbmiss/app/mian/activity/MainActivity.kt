@@ -4,11 +4,12 @@ import android.content.Intent
 import android.os.Build
 import android.widget.Toast
 import co.aenterhy.toggleswitch.ToggleSwitchButton
-import com.blankj.utilcode.util.PermissionUtils
+import com.blankj.utilcode.util.LogUtils
 import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.adapter.SampleFragmentPagerAdapter
 import com.rmbmiss.app.mian.base.BaseSuperActivity
 import com.rmbmiss.app.mian.databean.SamplePagerItem
+import com.rmbmiss.lib.utils.permission.OnPermissListener
 import com.rmbmiss.lib.utils.permission.PermissionTools
 import com.rmbmiss.nicetablibrary.NiceTabLayout
 import com.rmbmiss.nicetablibrary.NiceTabStrip
@@ -146,28 +147,42 @@ class MainActivity : BaseSuperActivity() ,NiceTabStrip.OnIndicatorColorChangedLi
 
         // 申请多个权限。
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PermissionUtils.requestPermissions(this,1,PermissionTools.SMS,object :PermissionUtils.OnPermissionListener{
-                override fun onPermissionGranted() {
-                    Toast.makeText(this@MainActivity,"无权限申请时处理",Toast.LENGTH_SHORT).show()
-                }
-                override fun onPermissionDenied(deniedPermissions: Array<out String>?) {
-                    Toast.makeText(this@MainActivity,"权限申请处理",Toast.LENGTH_SHORT).show()
-                }
-            },object :PermissionUtils.RationaleHandler(){
-                override fun showRationale() {
-                    Toast.makeText(this@MainActivity,"权限申请用户勾选不在询问时处理",Toast.LENGTH_SHORT).show()
-                }
-            })
-        }
-    }
+//            PermissionUtils.requestPermissions(this,1,PermissionTools.permission(PermissionTools.PHONE).getPermission(),object :PermissionUtils.OnPermissionListener{
+//                override fun onPermissionGranted() {
+//                    Toast.makeText(this@MainActivity,"无权限申请时处理",Toast.LENGTH_SHORT).show()
+//                }
+//                override fun onPermissionDenied(deniedPermissions: Array<out String>?) {
+//                    Toast.makeText(this@MainActivity,"权限申请处理",Toast.LENGTH_SHORT).show()
+//                }
+//            },object :PermissionUtils.RationaleHandler(){
+//                override fun showRationale() {
+//                    Toast.makeText(this@MainActivity,"权限申请用户勾选不在询问时处理",Toast.LENGTH_SHORT).show()
+//                }
+//            })
 
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when(requestCode){
-            1 -> {
-                Toast.makeText(this@MainActivity,"权限申请拒绝时处理",Toast.LENGTH_SHORT).show()
-            }
+            PermissionTools.with(this)
+                .setCodes(1)
+                .permission(PermissionTools.PHONE,PermissionTools.SMS)
+                .getPermission()
+                .addOnPermissListener(object :OnPermissListener{
+                    override fun onSourse() {
+                        Toast.makeText(this@MainActivity,"OK",Toast.LENGTH_SHORT).show()
+                    }
+                    override fun onRationale(code: Int, ra: MutableSet<String>) {
+                        Toast.makeText(this@MainActivity,"权限申请用户拒绝时处理",Toast.LENGTH_SHORT).show()
+                        for (str in ra){
+                            LogUtils.e("=================="+str)
+                        }
+                    }
+                    override fun onNoRequce(code: Int, no: MutableSet<String>) {
+                        Toast.makeText(this@MainActivity,"权限申请用户勾选不在询问时处理",Toast.LENGTH_SHORT).show()
+                        for (str in no){
+                            LogUtils.e("*******************"+str)
+                         }
+                        PermissionTools.openPermissManger(this@MainActivity)
+                    }
+                })
+                .requestPermissions()
         }
     }
 
