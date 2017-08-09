@@ -44,7 +44,7 @@ dependencies {
     //https://github.com/kyleduo/SwitchButton
     compile 'com.kyleduo.switchbutton:library:1.4.6'
 
-    // Android M权限处理： https://github.com/yanzhenjie/AndPermission/blob/master/README-CN.md
-    // compile 'com.yanzhenjie:permission:1.0.9'
+    // Android M权限处理： https://github.com/mylhyl/AndroidAcp
+    compile 'com.mylhyl:acp:1.1.7'
 }
 

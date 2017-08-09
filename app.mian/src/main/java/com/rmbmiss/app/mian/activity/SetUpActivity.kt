@@ -37,9 +37,9 @@ class SetUpActivity :BaseSuperActivity() {
 
     override fun initData() {
         for (i in 0.. 1){
-            val map = mutableMapOf<CharSequence,Class<*>>("导航栏设置" to NavigationActivity::class.java)
-            val setUpDatabean = SetUpDatabean(0,"菜单",map)
-            mList.add(i, setUpDatabean)
+//            val map = mutableMapOf<CharSequence,Class<*>>("导航栏设置" to NavigationActivity::class.java)
+//            val setUpDatabean = SetUpDatabean(0,"菜单",map)
+//            mList.add(i, setUpDatabean)
         }
         id_main_rv_1?.let {
             mSetupAdapter = SetUpAdapter(applicationContext,mList)

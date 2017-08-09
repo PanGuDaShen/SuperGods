@@ -134,11 +134,11 @@ abstract class DatabaseOpenHelper(private val mContext: Context, private val mNa
         get() {
             val sbPath = StringBuffer()
             if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
-                sbPath.append(android.os.Environment.getExternalStorageDirectory().absolutePath + File.separator + "name")
-                sbPath.append(File.separator + "name1" + File.separator)
+                sbPath.append(android.os.Environment.getExternalStorageDirectory().absolutePath + File.separator + "com")
+                sbPath.append(File.separator + "rmbmiss" + File.separator)
             } else {
-                sbPath.append(mContext.cacheDir.toString() + File.separator + "name")
-                sbPath.append(File.separator + "name1" + File.separator)
+                sbPath.append(mContext.cacheDir.toString() + File.separator + "com")
+                sbPath.append(File.separator + "rmbmiss" + File.separator)
             }
             val f = File(sbPath.toString())
             if (!f.exists()) {

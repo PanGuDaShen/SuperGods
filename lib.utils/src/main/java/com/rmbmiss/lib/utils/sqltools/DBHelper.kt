@@ -24,7 +24,7 @@ import com.rmbmiss.lib.utils.pathtools.DirPathTools
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-class DBHelper(mContext: Context, mName: String?): DatabaseOpenHelper(mContext, mName,null, 1) {
+class DBHelper(mContext: Context, mName: String?): DatabaseOpenHelper(mContext, mName,null, 2) {
     private var mContext: Context?=null
     private var mName:String?=null
     private var mNewVersion: Int=0
@@ -36,7 +36,11 @@ class DBHelper(mContext: Context, mName: String?): DatabaseOpenHelper(mContext, 
     override fun onCreate(db: SQLiteDatabase) {
         mName?.let {
             when(it){
-                "mian.db" -> {Toast.makeText(mContext,"$mName",Toast.LENGTH_SHORT).show()}
+                "mian.db" -> {
+                    Toast.makeText(mContext,"$mName",Toast.LENGTH_SHORT).show()
+                    db.execSQL(NavigaTionTable.naviga)
+                    db.execSQL(NavigaTionTable.insertNaviga)
+                }
                 "mall.db" -> {Toast.makeText(mContext,"$mName",Toast.LENGTH_SHORT).show()}
                 "news.db" -> {Toast.makeText(mContext,"$mName",Toast.LENGTH_SHORT).show()}
                 else -> {
