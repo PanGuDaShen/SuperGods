@@ -39,7 +39,6 @@ class DBHelper(mContext: Context, mName: String?): DatabaseOpenHelper(mContext, 
                 "mian.db" -> {
                     Toast.makeText(mContext,"$mName",Toast.LENGTH_SHORT).show()
                     db.execSQL(NavigaTionTable.naviga)
-                    db.execSQL(NavigaTionTable.insertNaviga)
                 }
                 "mall.db" -> {Toast.makeText(mContext,"$mName",Toast.LENGTH_SHORT).show()}
                 "news.db" -> {Toast.makeText(mContext,"$mName",Toast.LENGTH_SHORT).show()}

@@ -4,6 +4,7 @@ import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.adapter.SampleFragmentPagerAdapter
 import com.rmbmiss.app.mian.base.BaseSuperActivity
 import com.rmbmiss.app.mian.databean.SamplePagerItem
+import com.rmbmiss.app.mian.dialog.NiceDialog
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseSuperActivity() {
@@ -27,7 +28,8 @@ class MainActivity : BaseSuperActivity() {
 
     override fun initEvent() {
         xxxxxx.setOnClickListener {
-            acp()
+//            acp()
+            dialogPermission(NiceDialog())
         }
     }
 
