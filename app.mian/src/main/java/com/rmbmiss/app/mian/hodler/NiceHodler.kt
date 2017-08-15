@@ -42,15 +42,73 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
     override fun bindHolder(person: T) {
         person as NiceDialogList.NicedialogDatabean
         id_main_tv_3.setText(person.key)
-        when(person.veluce){
-            "true" -> {id_main_tv_3.isClickable = true}
-            "false" -> {id_main_tv_3.isClickable = false}
-            "0" -> {}
-            "1" -> {}
-            "2" -> {}
-            "3" -> {}
-            "4" -> {}
-            "5" -> {}
+        when(person.key){
+            "setDrawOrder" -> {
+                when(person.veluce){
+                    "0" -> {id_main_tv_4.text = person.veluce}
+                    "1" -> {id_main_tv_4.text = person.veluce}
+                    "2" -> {id_main_tv_4.text = person.veluce}
+                    "3" -> {id_main_tv_4.text = person.veluce}
+                    "4" -> {id_main_tv_4.text = person.veluce}
+                    "5" -> {id_main_tv_4.text = person.veluce}
+                }
+            }
+            "setShowUnderline" -> {
+                when(person.veluce){
+                    "true" -> id_mian_sb1.isChecked = true
+                    "false" -> id_mian_sb1.isChecked = false
+                    else -> id_mian_sb1.isChecked = false
+                }
+            }
+            "setShowDivider" -> {
+                when(person.veluce){
+                    "true" -> id_mian_sb1.isChecked = true
+                    "false" -> id_mian_sb1.isChecked = false
+                    else -> id_mian_sb1.isChecked = false
+                }
+            }
+            "setShowIndicator" -> {
+                when(person.veluce){
+                    "true" -> id_mian_sb1.isChecked = true
+                    "false" -> id_mian_sb1.isChecked = false
+                    else -> id_mian_sb1.isChecked = false
+                }
+            }
+            "setDistributeEvenly" -> {
+                when(person.veluce){
+                    "true" -> id_mian_sb1.isChecked = true
+                    "false" -> id_mian_sb1.isChecked = false
+                    else -> id_mian_sb1.isChecked = false
+                }
+            }
+            "setTabSelectedCenter" -> {
+                when(person.veluce){
+                    "true" -> id_mian_sb1.isChecked = true
+                    "false" -> id_mian_sb1.isChecked = false
+                    else -> id_mian_sb1.isChecked = false
+                }
+            }
+            "clearBadge" -> {
+                when(person.veluce){
+                    "true" -> id_mian_sb1.isChecked = true
+                    "false" -> id_mian_sb1.isChecked = false
+                    else -> id_mian_sb1.isChecked = false
+                }
+            }
+            "setTabMode" -> {
+                when(person.veluce){
+                    "0" -> {id_main_tv_4.text = person.veluce}
+                    "1" -> {id_main_tv_4.text = person.veluce}
+                    "2" -> {id_main_tv_4.text = person.veluce}
+                }
+            }
+            "setTabColorBlendMode" -> {
+                when(person.veluce){
+                    "0" -> {id_main_tv_4.text = person.veluce}
+                    "1" -> {id_main_tv_4.text = person.veluce}
+                    "2" -> {id_main_tv_4.text = person.veluce}
+                }
+            }
         }
         id_mian_sb1.setOnCheckedChangeListener(object :CompoundButton.OnCheckedChangeListener{
             override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
