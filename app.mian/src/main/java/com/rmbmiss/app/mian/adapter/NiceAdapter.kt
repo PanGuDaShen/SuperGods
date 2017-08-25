@@ -20,18 +20,16 @@ import com.rmbmiss.app.mian.hodler.NiceHodler
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-class NiceAdapter<T, VH : BaseHFAbstartViewHolder<T>>(that: Context, datas: MutableList<T>?) : BaseHFRecyclerAdapter<T, VH>(that, datas) {
+class NiceAdapter<T, VH : BaseHFAbstartViewHolder<T>>(that: Context, datas: MutableList<T>?,listener: NiceHodler.OnNiceClickListener?) : BaseHFRecyclerAdapter<T, VH>(that, datas) {
 
-    private var niceHolder: NiceHodler<T>? = null
+    private var mListener: NiceHodler.OnNiceClickListener? = null
+
+    init {
+        mListener = listener
+    }
 
     override fun onCreateHolder(parent: ViewGroup?, viewType: Int): VH? {
-        niceHolder = NiceHodler<T>(mContext, mInflater.inflate(R.layout.dialog_nice_type, parent, false))
-        return niceHolder as VH
+        return NiceHodler<T>(mContext, mInflater.inflate(R.layout.dialog_nice_type, parent, false),mListener) as VH
     }
 
-    fun setOnNiceClickListener(listener: NiceHodler.OnNiceClickListener){
-        niceHolder?.let {
-            it.setOnClickListener(listener)
-        }
-    }
 }

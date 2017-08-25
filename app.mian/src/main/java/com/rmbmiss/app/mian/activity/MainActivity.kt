@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseSuperActivity() {
 
-    private val mTexts = mutableListOf<String>("0000000000", "11111111111111", "222222222", "3333333333333333333", "444444", "55", "66", "77")
+    private val mTexts = mutableListOf<String>("都是", "高度", "有人", "拒绝", "二人", "脚后", "打手", "儿童")
     private val mIconRound = mutableListOf<Int>(R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher
             , R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher)
     private val mIcon = mutableListOf<Int>(R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round
@@ -29,7 +29,7 @@ class MainActivity : BaseSuperActivity() {
     override fun initEvent() {
         xxxxxx.setOnClickListener {
 //            acp()
-            dialogPermission(NiceDialog())
+            dialogPermission(NiceDialog().setNiceTabLayout(id_main_ntl_1))
         }
     }
 
@@ -69,5 +69,4 @@ class MainActivity : BaseSuperActivity() {
     fun invalidateBlur() {
         id_main_ntl_1.invalidateBlur()
     }
-
 }

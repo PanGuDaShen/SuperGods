@@ -12,7 +12,7 @@ import com.rmbmiss.app.mian.base.BaseDatabean
  * 修改时间：2017/7/26 16:25
  * 修改备注：
  * 版    本：Vs.1.0.0
- * 修订版本：Vs.1.0.2
+ * 修订版本：Vs.1.0.2 
  * ================================================
  */
 object NiceDialogList {

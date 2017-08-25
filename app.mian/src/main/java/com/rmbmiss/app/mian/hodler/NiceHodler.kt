@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
-import android.widget.Toast
 import com.kyleduo.switchbutton.SwitchButton
 import com.rmbmiss.app.mian.R
 import com.rmbmiss.app.mian.base.BaseHFAbstartViewHolder
@@ -23,13 +22,13 @@ import com.rmbmiss.app.mian.databean.NiceDialogList
  * 修订版本：Vs.1.0.2
  * ================================================
  */
-class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(view) {
+class NiceHodler<T>(content: Context?, view: View,listener:OnNiceClickListener?): BaseHFAbstartViewHolder<T>(view) {
 
     private var id_main_tv_3:TextView
     private var id_main_tv_4:TextView
     private var id_mian_sb1: SwitchButton
     private var mContent: Context? = null
-    private var listener:OnNiceClickListener? = null
+    private var mListener:OnNiceClickListener? = null
 
     init {
         id_main_tv_3 = view.findViewById(R.id.id_main_tv_3)
@@ -37,6 +36,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
         id_mian_sb1 = view.findViewById(R.id.id_mian_sb1)
         content?.let {
             mContent = content
+            mListener = listener
         }
     }
     override fun bindHolder(person: T) {
@@ -44,6 +44,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
         id_main_tv_3.setText(person.key)
         when(person.key){
             "setDrawOrder" -> {
+                id_mian_sb1.visibility = View.GONE
                 when(person.veluce){
                     "0" -> {id_main_tv_4.text = person.veluce}
                     "1" -> {id_main_tv_4.text = person.veluce}
@@ -54,6 +55,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
                 }
             }
             "setShowUnderline" -> {
+                id_main_tv_4.visibility = View.GONE
                 when(person.veluce){
                     "true" -> id_mian_sb1.isChecked = true
                     "false" -> id_mian_sb1.isChecked = false
@@ -61,6 +63,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
                 }
             }
             "setShowDivider" -> {
+                id_main_tv_4.visibility = View.GONE
                 when(person.veluce){
                     "true" -> id_mian_sb1.isChecked = true
                     "false" -> id_mian_sb1.isChecked = false
@@ -68,6 +71,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
                 }
             }
             "setShowIndicator" -> {
+                id_main_tv_4.visibility = View.GONE
                 when(person.veluce){
                     "true" -> id_mian_sb1.isChecked = true
                     "false" -> id_mian_sb1.isChecked = false
@@ -75,6 +79,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
                 }
             }
             "setDistributeEvenly" -> {
+                id_main_tv_4.visibility = View.GONE
                 when(person.veluce){
                     "true" -> id_mian_sb1.isChecked = true
                     "false" -> id_mian_sb1.isChecked = false
@@ -82,6 +87,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
                 }
             }
             "setTabSelectedCenter" -> {
+                id_main_tv_4.visibility = View.GONE
                 when(person.veluce){
                     "true" -> id_mian_sb1.isChecked = true
                     "false" -> id_mian_sb1.isChecked = false
@@ -89,6 +95,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
                 }
             }
             "clearBadge" -> {
+                id_main_tv_4.visibility = View.GONE
                 when(person.veluce){
                     "true" -> id_mian_sb1.isChecked = true
                     "false" -> id_mian_sb1.isChecked = false
@@ -96,6 +103,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
                 }
             }
             "setTabMode" -> {
+                id_mian_sb1.visibility = View.GONE
                 when(person.veluce){
                     "0" -> {id_main_tv_4.text = person.veluce}
                     "1" -> {id_main_tv_4.text = person.veluce}
@@ -103,6 +111,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
                 }
             }
             "setTabColorBlendMode" -> {
+                id_mian_sb1.visibility = View.GONE
                 when(person.veluce){
                     "0" -> {id_main_tv_4.text = person.veluce}
                     "1" -> {id_main_tv_4.text = person.veluce}
@@ -112,7 +121,7 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
         }
         id_mian_sb1.setOnCheckedChangeListener(object :CompoundButton.OnCheckedChangeListener{
             override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
-                listener?.let {
+                mListener?.let {
                     if (p1)person.veluce = "true" else person.veluce = "false"
                     it.onClicks(person)
                 }
@@ -120,9 +129,10 @@ class NiceHodler<T>(content: Context?, view: View): BaseHFAbstartViewHolder<T>(v
         })
     }
 
-    fun setOnClickListener(listener:OnNiceClickListener){
-        this.listener = listener
+    fun setOnClickListener(listener:OnNiceClickListener?){
+        this.mListener = listener
     }
+
     interface OnNiceClickListener{
         fun onClicks(str:NiceDialogList.NicedialogDatabean)
     }
